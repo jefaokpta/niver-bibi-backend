@@ -24,7 +24,7 @@
 
 
 <section class="page-section about-heading">
-  <div class="container">
+  <div id="app" class="container">
     <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="/images/capivara.jpeg" alt="Convite do Dudu" />
     <div class="about-heading-content">
       <div class="row">
@@ -34,47 +34,45 @@
               <span class="section-heading-lower">Confirme sua presença!</span>
             </h2>
             <p>Por favor confirme sua presença e idade para o buffet.</p>
-            <div class="spinner-border text-info" role="status" [hidden]="!btnLoading">
+<!--            todo: esconder enquanto carrega dados -->
+            <div class="spinner-border text-info" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
-            <form [formGroup]="form" (ngSubmit)="confirm()">
+            <form >
               <div class="form-floating mb-3">
-                <input type="text" readonly class="form-control" formControlName="name" id="name" placeholder="Seu Nome">
+                <input type="text" readonly class="form-control" id="name" placeholder="Seu Nome">
                 <label for="name">Seu Nome</label>
-                <small *ngIf="validOrTouched('name')" class="form-text text-danger">Nome Obrigatório</small>
+                <small class="form-text text-danger">Nome Obrigatório</small>
               </div>
               <div class="form-floating mb-3">
-                <input type="number" readonly class="form-control" formControlName="phone" id="phone" placeholder="Seu Telefone">
+                <input type="number" readonly class="form-control" id="phone" placeholder="Seu Telefone">
                 <label for="phone">Seu Telefone</label>
-                <small *ngIf="validOrTouched('phone')" class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
+                <small class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
               </div>
-              <!--            <button type="button" class="btn btn-outline-primary btn-sm" (click)="addGuest({name: '', isKid: false, id: 0})">-->
-              <!--              <em class="fa-solid fa-plus"></em>-->
-              <!--              Adicionar Acompanhante-->
-              <!--            </button>-->
-              <div formArrayName="guests" *ngFor="let item of guests.controls; let i= index">
-                <div class="input-group mb-3 guests" [formGroupName]="i">
+<!--             todo: div abaixo deve rodar for nela -->
+              <div >
+                <div class="input-group mb-3 guests">
                   <div class="form-floating mb-3 col-8">
-                    <input type="text" readonly class="form-control" formControlName="name" id="guestName" placeholder="Acompanhante">
+                    <input type="text" readonly class="form-control" id="guestName" placeholder="Acompanhante">
                     <label for="guestName">Acompanhante</label>
-                    <small *ngIf="validOrTouchedGuests('name', i)" class="form-text text-danger">Nome Acompanhante Obrigatório</small>
+                    <small class="form-text text-danger">Nome Acompanhante Obrigatório</small>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input checkbox-xl" type="checkbox" formControlName="isKid" id="flexCheckDefault">
+                    <input class="form-check-input checkbox-xl" type="checkbox" id="flexCheckDefault">
                     <label class="form-check-label" style="padding-left: 8px" for="flexCheckDefault">
                       Menor de 15 anos?
                     </label>
                   </div>
                   <div class="form-floating mb-3">
-                    <button type="button" class="btn btn-outline-primary" (click)="removeGuest(i)">
+                    <button type="button" class="btn btn-outline-primary">
                       <em class="fa-solid fa-trash-can"></em>
                     </button>
                   </div>
                 </div>
               </div>
-              <button class="btn btn-success col-12" type="submit" [disabled]="sendButtonDisabled">
-                {{sendButtonText}}
-                <span [hidden]="sendButtornLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <button class="btn btn-success col-12" type="submit">
+                {{message}}
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               </button>
             </form>
           </div>
@@ -84,7 +82,24 @@
   </div>
 </section>
 <footer class="footer text-faded text-center py-5">
-  <div class="container"><p class="m-0 small">Feito com ❤️ pelo papai <a href="https://www.linkedin.com/in/🤓-jefferson-alves-reis-00007361/">jefaokpta</a> 2022 </p></div>
+  <div class="container"><p class="m-0 small">Feito com ❤️ pelo papai <a href="https://www.linkedin.com/in/🤓-jefferson-alves-reis-00007361/">jefaokpta</a> 2024 </p></div>
 </footer>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<div id="app">{{ message }}</div>
+
+<script>
+  const { createApp, ref } = Vue
+
+  createApp({
+    setup() {
+      const message = ref('Hello vue!')
+      return {
+        message
+      }
+    }
+  }).mount('#app')
+</script>
 </body>
 </html>
