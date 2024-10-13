@@ -1,8 +1,11 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Participant } from './participant.entity';
 
 @Entity('guests')
 export class Guest {
+    @PrimaryGeneratedColumn({ type: 'bigint' })
+    readonly id: number;
+
     @Column()
     readonly name: string;
 
