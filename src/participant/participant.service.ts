@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 import { UpdateParticipantDto } from './dto/update-participant.dto';
+import { Repository } from 'typeorm';
+import { Participant } from './entities/participant.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ParticipantService {
 
+  constructor(
+    @InjectRepository(Participant)
+    private readonly participantRepository: Repository<Participant>
+  ) {}
+
   create(createParticipantDto: CreateParticipantDto) {
-    return 'This action adds a new participant';
+    return this.participantRepository.save(createParticipantDto);
   }
 
   findAll() {

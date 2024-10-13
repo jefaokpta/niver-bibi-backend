@@ -12,11 +12,8 @@ export class Participant {
   @Column()
   readonly phone: string;
 
-  @Column({ name: 'is_confirmed', type: 'boolean' })
+  @Column({ name: 'is_confirmed', type: 'boolean', default: false })
   readonly isConfirmed: boolean;
-
-  @Column()
-  readonly link: string;
 
   @OneToMany(() => Guest, (guest) => guest.participant, { cascade: true, eager: true })
   readonly guests?: Guest[];
