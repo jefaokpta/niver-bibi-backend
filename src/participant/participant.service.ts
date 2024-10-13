@@ -1,30 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 import { UpdateParticipantDto } from './dto/update-participant.dto';
-import { Participant } from './entities/participant.entity';
 
 @Injectable()
 export class ParticipantService {
 
-  private readonly participants: Participant[] = [
-    {
-      id: 'hash-id',
-      name: 'John Doe',
-      phone: '1234567890',
-      isConfirmed: false,
-      link: 'https://example.com',
-      guests: [
-        {
-          name: 'Jane Doe',
-          isKid: false,
-        },
-        {
-          name: 'Joao Doe',
-          isKid: true,
-        }
-      ],
-    },
-  ];
   create(createParticipantDto: CreateParticipantDto) {
     return 'This action adds a new participant';
   }
@@ -34,7 +14,7 @@ export class ParticipantService {
   }
 
   findOne(id: string) {
-    return this.participants.find((participant) => participant.id === id);
+    return `This action returns a #${id} participant`;
   }
 
   update(id: number, updateParticipantDto: UpdateParticipantDto) {

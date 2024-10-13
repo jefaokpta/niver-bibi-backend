@@ -1,10 +1,28 @@
 import { Module } from '@nestjs/common';
 import { HomeModule } from './home/home.module';
 import { ParticipantModule } from './participant/participant.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { MysqlConfig } from './config/mysql.config';
+import { DataSource } from 'typeorm';
 
 @Module({
-  imports: [HomeModule, ParticipantModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      useClass: MysqlConfig,
+      inject: [MysqlConfig],
+    }),
+    HomeModule,
+    ParticipantModule
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly dataSource: DataSource) {
+    console.log('🚀 Database conectado:', dataSource.options.database);
+  }
+}
