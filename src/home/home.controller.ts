@@ -8,8 +8,6 @@ export class HomeController {
   @Get()
   @Render('home')
   root() {
-    return {
-      message: 'Hello world!',
-    };
+    return
   }
 }

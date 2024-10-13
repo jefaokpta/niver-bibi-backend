@@ -24,7 +24,7 @@
 
 
 <section class="page-section about-heading">
-  <div id="app" class="container">
+  <div class="container">
     <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="/images/capivara.jpeg" alt="Convite do Dudu" />
     <div class="about-heading-content">
       <div class="row">
@@ -38,27 +38,27 @@
             <div class="spinner-border text-info" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
-            <form >
+            <form id="app" >
               <div class="form-floating mb-3">
-                <input type="text" readonly class="form-control" id="name" value="{{participant.name}}" placeholder="Seu Nome">
+                <input type="text" readonly class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
                 <label for="name">Seu Nome</label>
                 <small class="form-text text-danger">Nome Obrigatório</small>
               </div>
               <div class="form-floating mb-3">
-                <input type="number" readonly class="form-control" id="phone" placeholder="Seu Telefone">
+                <input type="number" readonly class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
                 <label for="phone">Seu Telefone</label>
                 <small class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
               </div>
 <!--             todo: div abaixo deve rodar for nela -->
-              <div >
+              <div v-for="guest in participant.guests" >
                 <div class="input-group mb-3 guests">
                   <div class="form-floating mb-3 col-8">
-                    <input type="text" readonly class="form-control" id="guestName" placeholder="Acompanhante">
+                    <input type="text" readonly class="form-control" v-model="guest.name" id="guestName" placeholder="Acompanhante">
                     <label for="guestName">Acompanhante</label>
                     <small class="form-text text-danger">Nome Acompanhante Obrigatório</small>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input checkbox-xl" type="checkbox" id="flexCheckDefault">
+                    <input class="form-check-input checkbox-xl" disabled v-model="guest.isKid" type="checkbox" id="flexCheckDefault">
                     <label class="form-check-label" style="padding-left: 8px" for="flexCheckDefault">
                       Menor de 15 anos?
                     </label>
@@ -71,7 +71,7 @@
                 </div>
               </div>
               <button class="btn btn-success col-12" type="submit">
-                {{participant.name}}
+                \{{participant.name}}
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               </button>
             </form>
@@ -91,17 +91,16 @@
   const searchParams = new URLSearchParams(window.location.search)
   const id = searchParams.get('id')
   createApp({
-    setup() {
+    data() {
       const participant = ref({})
       return {
         participant
       }
     },
-    async created() {
+    async mounted() {
       const response = await fetch(`participants/${id}`)
-      this.participant.value = await response.json()
-      console.log(this.participant.value);
-    }
+      this.participant = await response.json()
+    },
   }).mount('#app')
 </script>
 </body>

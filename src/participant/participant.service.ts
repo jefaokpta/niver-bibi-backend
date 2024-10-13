@@ -18,6 +18,10 @@ export class ParticipantService {
           name: 'Jane Doe',
           isKid: false,
         },
+        {
+          name: 'Joao Doe',
+          isKid: true,
+        }
       ],
     },
   ];

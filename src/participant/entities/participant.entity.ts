@@ -6,5 +6,5 @@ export class Participant {
   readonly phone: string;
   readonly isConfirmed: boolean;
   readonly link: string;
-  readonly guests: [Guest];
+  readonly guests?: Guest[];
 }
