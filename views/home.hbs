@@ -40,7 +40,7 @@
             </div>
             <form >
               <div class="form-floating mb-3">
-                <input type="text" readonly class="form-control" id="name" placeholder="Seu Nome">
+                <input type="text" readonly class="form-control" id="name" value="{{participant.name}}" placeholder="Seu Nome">
                 <label for="name">Seu Nome</label>
                 <small class="form-text text-danger">Nome Obrigatório</small>
               </div>
@@ -71,7 +71,7 @@
                 </div>
               </div>
               <button class="btn btn-success col-12" type="submit">
-                {{message}}
+                {{participant.name}}
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               </button>
             </form>
@@ -86,23 +86,21 @@
 </footer>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
-<div id="app">{{ message }}</div>
-
 <script>
   const { createApp, ref } = Vue
-
+  const searchParams = new URLSearchParams(window.location.search)
+  const id = searchParams.get('id')
   createApp({
     setup() {
-      const message = ref('Hello vue!')
-
+      const participant = ref({})
       return {
-        message
+        participant
       }
     },
     async created() {
-      const response = await fetch('participants')
-      this.remoteData = await response.json()
+      const response = await fetch(`participants/${id}`)
+      this.participant.value = await response.json()
+      console.log(this.participant.value);
     }
   }).mount('#app')
 </script>

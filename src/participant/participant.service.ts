@@ -5,31 +5,32 @@ import { Participant } from './entities/participant.entity';
 
 @Injectable()
 export class ParticipantService {
+
+  private readonly participants: Participant[] = [
+    {
+      id: 'hash-id',
+      name: 'John Doe',
+      phone: '1234567890',
+      isConfirmed: false,
+      link: 'https://example.com',
+      guests: [
+        {
+          name: 'Jane Doe',
+          isKid: false,
+        },
+      ],
+    },
+  ];
   create(createParticipantDto: CreateParticipantDto) {
     return 'This action adds a new participant';
   }
 
   findAll() {
-    const participants: Participant[] = [
-      {
-        id: 'qwemnb-qweqwe',
-        name: 'John Doe',
-        phone: '1234567890',
-        isConfirmed: false,
-        link: 'https://example.com',
-        guests: [
-          {
-            name: 'Jane Doe',
-            isKid: false,
-          },
-        ],
-      },
-    ];
-    return participants;
+    return 'This action returns all participant';
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} participant`;
+  findOne(id: string) {
+    return this.participants.find((participant) => participant.id === id);
   }
 
   update(id: number, updateParticipantDto: UpdateParticipantDto) {
