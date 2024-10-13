@@ -34,10 +34,6 @@
               <span class="section-heading-lower">Confirme sua presença!</span>
             </h2>
             <p>Por favor confirme sua presença e idade para o buffet.</p>
-<!--            todo: esconder enquanto carrega dados -->
-            <div class="spinner-border text-info" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
             <form id="app" >
               <div class="form-floating mb-3">
                 <input type="text" readonly class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
@@ -49,7 +45,6 @@
                 <label for="phone">Seu Telefone</label>
                 <small class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
               </div>
-<!--             todo: div abaixo deve rodar for nela -->
               <div v-for="guest in participant.guests" >
                 <div class="input-group mb-3 guests">
                   <div class="form-floating mb-3 col-8">
