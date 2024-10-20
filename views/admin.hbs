@@ -41,14 +41,12 @@
                 <div class="form-floating mb-3">
                   <input type="number" class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
                   <label for="phone">Seu Telefone</label>
-                  <small class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
                 </div>
                 <div v-for="guest in participant.guests" >
                   <div class="input-group mb-3 guests">
                     <div class="form-floating mb-3 col-8">
                       <input type="text" readonly class="form-control" v-model="guest.name" id="guestName" placeholder="Acompanhante">
                       <label for="guestName">Acompanhante</label>
-                      <small class="form-text text-danger">Nome Acompanhante Obrigatório</small>
                     </div>
                     <div class="form-check">
                       <input class="form-check-input checkbox-xl" disabled v-model="guest.isKid" type="checkbox" id="flexCheckDefault">
@@ -75,7 +73,7 @@
       </div>
     </div>
     <div class="bg-faded rounded p-1 mt-5">
-      <p-datatable :value="participants" stripedRows>
+      <p-datatable :value="participants" stripedRows paginator :rows="5">
         <p-column field="name" sortable header="Nome"></p-column>
         <p-column field="phone" header="Telefone"></p-column>
         <!--      <p-column field="guests" header="Acompanhantes"></p-column>-->
@@ -99,7 +97,7 @@
   const app = createApp({
     setup() {
       const participant = ref({})
-      const participants = ref({})
+      const participants = ref([])
       const loading = ref(false)
       const successAlert = ref(false)
       const errorAlert = ref(false)
