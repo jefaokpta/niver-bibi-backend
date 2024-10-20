@@ -35,22 +35,26 @@
               <form @submit.prevent="save" >
                 <div class="form-floating mb-3">
                   <input type="text" class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
-                  <label for="name">Seu Nome</label>
-                  <small class="form-text text-danger">Nome Obrigatório</small>
+                  <label for="name">Nome</label>
                 </div>
                 <div class="form-floating mb-3">
                   <input type="number" class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
-                  <label for="phone">Seu Telefone</label>
+                  <label for="phone">Telefone</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <button type="button" class="btn btn-outline-primary" @click="addGuest">
+                    <em class="fa-solid fa-plus"></em> Add Acompanhante
+                  </button>
                 </div>
                 <div v-for="guest in participant.guests" >
                   <div class="input-group mb-3 guests">
                     <div class="form-floating mb-3 col-8">
-                      <input type="text" readonly class="form-control" v-model="guest.name" id="guestName" placeholder="Acompanhante">
-                      <label for="guestName">Acompanhante</label>
+                      <input type="text" class="form-control" v-model="guest.name" id="guestName" placeholder="Acompanhante">
+                      <label for="guestName">Nome do acompanhante</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input checkbox-xl" disabled v-model="guest.isKid" type="checkbox" id="flexCheckDefault">
-                      <label class="form-check-label" style="padding-left: 8px" for="flexCheckDefault">
+                      <input class="form-check-input checkbox-xl" v-model="guest.isKid" type="checkbox">
+                      <label class="form-check-label" style="padding-left: 8px">
                         Menor de 15 anos?
                       </label>
                     </div>
@@ -85,6 +89,7 @@
             </p-iconfield>
           </div>
         </template>
+        <p-column field="id" header="ID"></p-column>
         <p-column field="name" sortable header="Nome"></p-column>
         <p-column field="phone" header="Telefone"></p-column>
         <!--      <p-column field="guests" header="Acompanhantes"></p-column>-->
@@ -108,7 +113,11 @@
   const id = searchParams.get('id')
   const app = createApp({
     setup() {
-      const participant = ref({})
+      const participant = ref({
+        name: '',
+        phone: '',
+        guests: []
+      })
       const participants = ref([])
       const loading = ref(false)
       const successAlert = ref(false)
@@ -151,6 +160,9 @@
         } else {
           this.errorAlert = true
         }
+      },
+      addGuest() {
+        this.participant.guests.push({ name: '', isKid: false })
       },
       hideSuccessAlert() {
         setTimeout(() => {

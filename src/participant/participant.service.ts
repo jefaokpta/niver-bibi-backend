@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 import { UpdateParticipantDto } from './dto/update-participant.dto';
 import { Repository } from 'typeorm';
@@ -7,10 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ParticipantService {
-
   constructor(
     @InjectRepository(Participant)
-    private readonly participantRepository: Repository<Participant>
+    private readonly participantRepository: Repository<Participant>,
   ) {}
 
   create(createParticipantDto: CreateParticipantDto) {
@@ -22,14 +21,23 @@ export class ParticipantService {
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} participant`;
+    return this.participantRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateParticipantDto: UpdateParticipantDto) {
-    return `This action updates a #${id} participant`;
+  async update(id: string, updateParticipantDto: UpdateParticipantDto) {
+    const participant = await this.participantRepository.findOne({
+      where: { id },
+    });
+    if (!participant) {throw new BadRequestException()}
+    const participantUpdated = {
+      ...participant,
+      ...updateParticipantDto.guests,
+      isConfirmed: true,
+    };
+    return await this.participantRepository.save(participantUpdated);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} participant`;
+  remove(id: string) {
+    return this.participantRepository.delete(id);
   }
 }

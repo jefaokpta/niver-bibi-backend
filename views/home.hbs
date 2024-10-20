@@ -27,14 +27,14 @@
   <div class="container">
     <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="/images/capivara.jpeg" alt="Convite do Dudu" />
     <div class="about-heading-content">
-      <div class="row">
+      <div id="app" class="row">
         <div class="col-xl-9 col-lg-10 mx-auto">
           <div class="bg-faded rounded p-5">
             <h2 class="section-heading mb-4">
               <span class="section-heading-lower">Confirme sua presença!</span>
             </h2>
             <p>Por favor confirme sua presença e idade para o buffet.</p>
-            <form id="app" >
+            <form @submit.prevent="save" >
               <div class="form-floating mb-3">
                 <input type="text" readonly class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
                 <label for="name">Seu Nome</label>
@@ -43,28 +43,28 @@
                 <input type="number" readonly class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
                 <label for="phone">Seu Telefone</label>
               </div>
-              <div v-for="guest in participant.guests" >
+              <div v-for="(guest, index) in participant.guests" >
                 <div class="input-group mb-3 guests">
                   <div class="form-floating mb-3 col-8">
                     <input type="text" readonly class="form-control" v-model="guest.name" id="guestName" placeholder="Acompanhante">
                     <label for="guestName">Acompanhante</label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input checkbox-xl" disabled v-model="guest.isKid" type="checkbox" id="flexCheckDefault">
-                    <label class="form-check-label" style="padding-left: 8px" for="flexCheckDefault">
+                    <input class="form-check-input checkbox-xl" v-model="guest.isKid" type="checkbox">
+                    <label class="form-check-label" style="padding-left: 8px">
                       Menor de 15 anos?
                     </label>
                   </div>
                   <div class="form-floating mb-3">
-                    <button type="button" class="btn btn-outline-primary">
+                    <button type="button" class="btn btn-outline-primary" @click="removeGuest(index)">
                       <em class="fa-solid fa-trash-can"></em>
                     </button>
                   </div>
                 </div>
               </div>
-              <button class="btn btn-success col-12" type="submit">
-                Confirme sua presença!
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <button class="btn btn-success col-12" type="submit" :disabled="participant.isConfirmed">
+                \{{ confirmBtnText }}
+                <span class="spinner-border spinner-border-sm" v-if="loading" role="status" aria-hidden="true"></span>
               </button>
             </form>
           </div>
@@ -85,14 +85,39 @@
   createApp({
     data() {
       const participant = ref({})
+      const loading = ref(false)
+      const confirmAlert = ref(false)
+      const confirmBtnText = ref('Confirme sua presença!')
       return {
-        participant
+        participant,
+        loading,
+        confirmAlert,
+        confirmBtnText
       }
     },
     async mounted() {
       const response = await fetch(`participants/${id}`)
       this.participant = await response.json()
     },
+    methods: {
+      async save() {
+        this.loading = true
+        this.confirmBtnText = 'Salvando...'
+        const response = await fetch(`participants/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.participant)
+        })
+        this.loading = false
+        if (response.ok) {
+          this.confirmBtnText = 'Confirmado! 🥳 '
+          this.participant.guests.isConfirmed = true
+        }
+      },
+      removeGuest(index) {
+        this.participant.guests.splice(index, 1)
+      }
+    }
   }).mount('#app')
 </script>
 </body>
