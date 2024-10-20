@@ -24,7 +24,7 @@
 
 
 <section class="page-section about-heading">
-  <div class="container">
+  <div id="app" class="container">
     <div class="about-heading-content">
       <div class="row">
         <div class="col-xl-9 col-lg-10 mx-auto">
@@ -32,47 +32,48 @@
             <h2 class="section-heading mb-4">
               <span class="section-heading-lower">Cadastre Convidados</span>
             </h2>
-            <form id="app" >
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
-                <label for="name">Seu Nome</label>
-                <small class="form-text text-danger">Nome Obrigatório</small>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="number" class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
-                <label for="phone">Seu Telefone</label>
-                <small class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
-              </div>
-              <div v-for="guest in participant.guests" >
-                <div class="input-group mb-3 guests">
-                  <div class="form-floating mb-3 col-8">
-                    <input type="text" readonly class="form-control" v-model="guest.name" id="guestName" placeholder="Acompanhante">
-                    <label for="guestName">Acompanhante</label>
-                    <small class="form-text text-danger">Nome Acompanhante Obrigatório</small>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input checkbox-xl" disabled v-model="guest.isKid" type="checkbox" id="flexCheckDefault">
-                    <label class="form-check-label" style="padding-left: 8px" for="flexCheckDefault">
-                      Menor de 15 anos?
-                    </label>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <button type="button" class="btn btn-outline-primary">
-                      <em class="fa-solid fa-trash-can"></em>
-                    </button>
+              <form @submit.prevent="save" >
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
+                  <label for="name">Seu Nome</label>
+                  <small class="form-text text-danger">Nome Obrigatório</small>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="number" class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
+                  <label for="phone">Seu Telefone</label>
+                  <small class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
+                </div>
+                <div v-for="guest in participant.guests" >
+                  <div class="input-group mb-3 guests">
+                    <div class="form-floating mb-3 col-8">
+                      <input type="text" readonly class="form-control" v-model="guest.name" id="guestName" placeholder="Acompanhante">
+                      <label for="guestName">Acompanhante</label>
+                      <small class="form-text text-danger">Nome Acompanhante Obrigatório</small>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input checkbox-xl" disabled v-model="guest.isKid" type="checkbox" id="flexCheckDefault">
+                      <label class="form-check-label" style="padding-left: 8px" for="flexCheckDefault">
+                        Menor de 15 anos?
+                      </label>
+                    </div>
+                    <div class="form-floating mb-3">
+                      <button type="button" class="btn btn-outline-primary">
+                        <em class="fa-solid fa-trash-can"></em>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <button class="btn btn-success col-12" type="submit">
-                \{{participant.name}}
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              </button>
-            </form>
+                <button class="btn btn-success col-12" type="submit">
+                  Salvar
+                  <span class="spinner-border spinner-border-sm" v-if="loading" role="status" aria-hidden="true"></span>
+                </button>
+                <small class="form-text text-success" v-if="successAlert" >Dados salvos com sucesso 🥳 </small>
+              </form>
           </div>
         </div>
       </div>
     </div>
-    <div id="tabela" class="bg-faded rounded p-1 mt-5">
+    <div class="bg-faded rounded p-1 mt-5">
       <p-datatable :value="participants" stripedRows>
         <p-column field="name" sortable header="Nome"></p-column>
         <p-column field="phone" header="Telefone"></p-column>
@@ -84,10 +85,12 @@
 <footer class="footer text-faded text-center py-5">
   <div class="container"><p class="m-0 small">Feito com ❤️ pelo papai <a href="https://www.linkedin.com/in/🤓-jefferson-alves-reis-00007361/">jefaokpta</a> 2024 </p></div>
 </footer>
+<p-toast />
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://unpkg.com/primevue/umd/primevue.min.js"></script>
 <script src="https://unpkg.com/@primevue/themes/umd/aura.min.js"></script>
+
 <script>
   const { createApp, ref } = Vue
   const searchParams = new URLSearchParams(window.location.search)
@@ -95,8 +98,14 @@
   const app = createApp({
     setup() {
       const participant = ref({})
+      const participants = ref({})
+      const loading = ref(false)
+      const successAlert = ref(false)
       return {
-        participant
+        participant,
+        participants,
+        loading,
+        successAlert
       }
     },
     async mounted() {
@@ -104,23 +113,35 @@
         const response = await fetch(`participants/${id}`)
         this.participant = await response.json()
       }
-    },
-  })
-  app.mount('#app')
-
-  const tabela = createApp({
-    setup() {
-      const participants = ref({})
-      return {
-        participants
-      }
-    },
-    async mounted() {
       const response = await fetch(`participants`)
       this.participants = await response.json()
     },
+    methods: {
+      async save() {
+        this.loading = true
+        const response = await fetch(`participants`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.participant)
+        })
+        this.loading = false
+        if (response.ok) {
+          this.successAlert = true
+          this.hideSuccessAlert()
+        } else {
+          alert('Erro ao cadastrar participante!')
+        }
+      },
+      hideSuccessAlert() {
+        setTimeout(() => {
+          this.successAlert = false
+        }, 10000)
+      }
+    }
   })
-  tabela.use(PrimeVue.Config, {
+  app.use(PrimeVue.Config, {
     theme: {
       preset: PrimeVue.Themes.Aura,
       options: {
@@ -128,11 +149,12 @@
       }
     }
   });
-  tabela.component('p-datatable', PrimeVue.DataTable);
-  tabela.component('p-column', PrimeVue.Column);
-  tabela.component('p-columngroup', PrimeVue.ColumnGroup);
-  tabela.component('p-row', PrimeVue.Row);
-  tabela.mount('#tabela')
+  app.component('p-datatable', PrimeVue.DataTable);
+  app.component('p-column', PrimeVue.Column);
+  app.component('p-columngroup', PrimeVue.ColumnGroup);
+  app.component('p-row', PrimeVue.Row);
+  app.mount('#app')
+
 </script>
 </body>
 </html>
