@@ -72,6 +72,13 @@
         </div>
       </div>
     </div>
+    <div id="tabela" class="bg-faded rounded p-1 mt-5">
+      <p-datatable :value="participants" stripedRows>
+        <p-column field="name" sortable header="Nome"></p-column>
+        <p-column field="phone" header="Telefone"></p-column>
+        <!--      <p-column field="guests" header="Acompanhantes"></p-column>-->
+      </p-datatable>
+    </div>
   </div>
 </section>
 <footer class="footer text-faded text-center py-5">
@@ -79,12 +86,14 @@
 </footer>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/primevue/umd/primevue.min.js"></script>
+<script src="https://unpkg.com/@primevue/themes/umd/aura.min.js"></script>
 <script>
   const { createApp, ref } = Vue
   const searchParams = new URLSearchParams(window.location.search)
   const id = searchParams.get('id')
-  createApp({
-    data() {
+  const app = createApp({
+    setup() {
       const participant = ref({})
       return {
         participant
@@ -96,7 +105,34 @@
         this.participant = await response.json()
       }
     },
-  }).mount('#app')
+  })
+  app.mount('#app')
+
+  const tabela = createApp({
+    setup() {
+      const participants = ref({})
+      return {
+        participants
+      }
+    },
+    async mounted() {
+      const response = await fetch(`participants`)
+      this.participants = await response.json()
+    },
+  })
+  tabela.use(PrimeVue.Config, {
+    theme: {
+      preset: PrimeVue.Themes.Aura,
+      options: {
+        darkModeSelector: 'false',
+      }
+    }
+  });
+  tabela.component('p-datatable', PrimeVue.DataTable);
+  tabela.component('p-column', PrimeVue.Column);
+  tabela.component('p-columngroup', PrimeVue.ColumnGroup);
+  tabela.component('p-row', PrimeVue.Row);
+  tabela.mount('#tabela')
 </script>
 </body>
 </html>
