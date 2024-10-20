@@ -68,6 +68,7 @@
                   <span class="spinner-border spinner-border-sm" v-if="loading" role="status" aria-hidden="true"></span>
                 </button>
                 <small class="form-text text-success" v-if="successAlert" >Dados salvos com sucesso 🥳 </small>
+                <small class="form-text text-danger" v-if="errorAlert" >Deu falha ao salvar os dados </small>
               </form>
           </div>
         </div>
@@ -101,11 +102,13 @@
       const participants = ref({})
       const loading = ref(false)
       const successAlert = ref(false)
+      const errorAlert = ref(false)
       return {
         participant,
         participants,
         loading,
-        successAlert
+        successAlert,
+        errorAlert
       }
     },
     async mounted() {
@@ -129,9 +132,10 @@
         this.loading = false
         if (response.ok) {
           this.successAlert = true
+          this.participant = {}
           this.hideSuccessAlert()
         } else {
-          alert('Erro ao cadastrar participante!')
+          this.errorAlert = true
         }
       },
       hideSuccessAlert() {
