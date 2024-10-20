@@ -73,7 +73,18 @@
       </div>
     </div>
     <div class="bg-faded rounded p-1 mt-5">
-      <p-datatable :value="participants" stripedRows paginator :rows="5">
+      <p-datatable v-model:filters="filters" :value="participants" stripedRows paginator :rows="5" filterDisplay="row"
+                   :globalFilterFields="['name']">
+        <template #header>
+          <div class="flex justify-end">
+            <p-iconfield>
+              <p-inputicon>
+                <i class="pi pi-search" />
+              </p-inputicon>
+              <p-inputtext v-model="filters['global'].value" placeholder="Buscar" />
+            </p-iconfield>
+          </div>
+        </template>
         <p-column field="name" sortable header="Nome"></p-column>
         <p-column field="phone" header="Telefone"></p-column>
         <!--      <p-column field="guests" header="Acompanhantes"></p-column>-->
@@ -92,6 +103,7 @@
 
 <script>
   const { createApp, ref } = Vue
+  const FilterMatchMode = PrimeVue.FilterMatchMode
   const searchParams = new URLSearchParams(window.location.search)
   const id = searchParams.get('id')
   const app = createApp({
@@ -101,12 +113,16 @@
       const loading = ref(false)
       const successAlert = ref(false)
       const errorAlert = ref(false)
+      const filters = ref({
+          global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+      });
       return {
         participant,
         participants,
         loading,
         successAlert,
-        errorAlert
+        errorAlert,
+        filters
       }
     },
     async mounted() {
@@ -155,6 +171,9 @@
   app.component('p-column', PrimeVue.Column);
   app.component('p-columngroup', PrimeVue.ColumnGroup);
   app.component('p-row', PrimeVue.Row);
+  app.component('p-iconfield', PrimeVue.IconField);
+  app.component('p-inputtext', PrimeVue.InputText);
+  app.component('p-inputicon', PrimeVue.InputIcon);
   app.mount('#app')
 
 </script>
