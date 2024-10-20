@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { MysqlConfig } from './config/mysql.config';
 import { DataSource } from 'typeorm';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { DataSource } from 'typeorm';
       inject: [MysqlConfig],
     }),
     HomeModule,
-    ParticipantModule
+    ParticipantModule,
+    AdminModule
   ],
   controllers: [],
   providers: [],

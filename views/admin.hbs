@@ -25,23 +25,21 @@
 
 <section class="page-section about-heading">
   <div class="container">
-    <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="/images/capivara.jpeg" alt="Convite do Dudu" />
     <div class="about-heading-content">
       <div class="row">
         <div class="col-xl-9 col-lg-10 mx-auto">
           <div class="bg-faded rounded p-5">
             <h2 class="section-heading mb-4">
-              <span class="section-heading-lower">Confirme sua presença!</span>
+              <span class="section-heading-lower">Cadastre Convidados</span>
             </h2>
-            <p>Por favor confirme sua presença e idade para o buffet.</p>
             <form id="app" >
               <div class="form-floating mb-3">
-                <input type="text" readonly class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
+                <input type="text" class="form-control" id="name" v-model="participant.name" placeholder="Seu Nome">
                 <label for="name">Seu Nome</label>
                 <small class="form-text text-danger">Nome Obrigatório</small>
               </div>
               <div class="form-floating mb-3">
-                <input type="number" readonly class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
+                <input type="number" class="form-control" id="phone" v-model="participant.phone" placeholder="Seu Telefone">
                 <label for="phone">Seu Telefone</label>
                 <small class="form-text text-danger">Telefone Obrigatório (apenas números)</small>
               </div>
@@ -93,8 +91,10 @@
       }
     },
     async mounted() {
-      const response = await fetch(`participants/${id}`)
-      this.participant = await response.json()
+      if (id) {
+        const response = await fetch(`participants/${id}`)
+        this.participant = await response.json()
+      }
     },
   }).mount('#app')
 </script>
