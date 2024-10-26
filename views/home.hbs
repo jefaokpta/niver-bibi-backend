@@ -62,7 +62,7 @@
                   </div>
                 </div>
               </div>
-              <button class="btn btn-success col-12" type="submit" :disabled="participant.isConfirmed">
+              <button class="btn btn-success col-12" type="submit" :disabled="confirmBtnBlock">
                 \{{ confirmBtnText }}
                 <span class="spinner-border spinner-border-sm" v-if="loading" role="status" aria-hidden="true"></span>
               </button>
@@ -88,16 +88,22 @@
       const loading = ref(false)
       const confirmAlert = ref(false)
       const confirmBtnText = ref('Confirme sua presença!')
+      const confirmBtnBlock = ref(false)
       return {
         participant,
         loading,
         confirmAlert,
-        confirmBtnText
+        confirmBtnText,
+        confirmBtnBlock
       }
     },
     async mounted() {
       const response = await fetch(`participants/${id}`)
       this.participant = await response.json()
+      if (this.participant.isConfirmed) {
+        this.confirmBtnText = 'Confirmado uhuu! 🥳'
+        this.confirmBtnBlock = true
+      }
     },
     methods: {
       async save() {
@@ -110,8 +116,8 @@
         })
         this.loading = false
         if (response.ok) {
-          this.confirmBtnText = 'Confirmado! 🥳 '
-          this.participant.guests.isConfirmed = true
+          this.confirmBtnText = 'Confirmado uhuu! 🥳 '
+          this.confirmBtnBlock = true
         }
       },
       removeGuest(index) {

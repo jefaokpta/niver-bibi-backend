@@ -25,7 +25,9 @@ export class ParticipantService {
   }
 
   async update(id: string, updateParticipantDto: UpdateParticipantDto) {
-    const updated = await this.participantRepository.preload(updateParticipantDto)
+    const updated = await this.participantRepository.preload({
+      ...updateParticipantDto, isConfirmed: true
+    });
     if (!updated) throw new BadRequestException()
     return await this.participantRepository.save(updated);
   }
