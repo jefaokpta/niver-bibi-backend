@@ -50,8 +50,8 @@
                     <label for="guestName">Acompanhante</label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input checkbox-xl" v-model="guest.isKid" type="checkbox">
-                    <label class="form-check-label" style="padding-left: 8px">
+                    <input class="form-check-input checkbox-xl" v-model="guest.isKid" type="checkbox" :id="index">
+                    <label class="form-check-label" style="padding-left: 8px" :for="index">
                       Menor de 15 anos?
                     </label>
                   </div>

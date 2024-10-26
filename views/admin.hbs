@@ -91,8 +91,12 @@
         </template>
         <p-column field="id" header="ID"></p-column>
         <p-column field="name" sortable header="Nome"></p-column>
-        <p-column field="phone" header="Telefone"></p-column>
-        <!--      <p-column field="guests" header="Acompanhantes"></p-column>-->
+        <p-column field="isConfirmed" header="Confirmado">
+          <template #body="{data}">
+            {{data.status}} precisa criar tag template
+          </template>
+        </p-column>
+
       </p-datatable>
     </div>
   </div>
@@ -109,8 +113,6 @@
 <script>
   const { createApp, ref } = Vue
   const FilterMatchMode = PrimeVue.FilterMatchMode
-  const searchParams = new URLSearchParams(window.location.search)
-  const id = searchParams.get('id')
   const app = createApp({
     setup() {
       const participant = ref({
@@ -135,14 +137,17 @@
       }
     },
     async mounted() {
-      if (id) {
-        const response = await fetch(`participants/${id}`)
-        this.participant = await response.json()
-      }
-      const response = await fetch(`participants`)
-      this.participants = await response.json()
+      // if (id) {
+      //   const response = await fetch(`participants/${id}`)
+      //   this.participant = await response.json()
+      // }
+      this.loadTable()
     },
     methods: {
+      async loadTable() {
+        const response = await fetch(`participants`)
+        this.participants = await response.json()
+      },
       async save() {
         this.loading = true
         const response = await fetch(`participants`, {
@@ -157,6 +162,7 @@
           this.successAlert = true
           this.participant = {}
           this.hideSuccessAlert()
+          this.loadTable()
         } else {
           this.errorAlert = true
         }
