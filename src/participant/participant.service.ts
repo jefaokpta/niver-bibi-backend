@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 import { UpdateParticipantDto } from './dto/update-participant.dto';
 import { Repository } from 'typeorm';
@@ -20,21 +20,14 @@ export class ParticipantService {
     return this.participantRepository.find();
   }
 
-  findOne(id: string) {
-    return this.participantRepository.findOne({ where: { id } });
+  async findOne(id: string) {
+    return await this.participantRepository.findOne({ where: { id } });
   }
 
   async update(id: string, updateParticipantDto: UpdateParticipantDto) {
-    const participant = await this.participantRepository.findOne({
-      where: { id },
-    });
-    if (!participant) {throw new BadRequestException()}
-    const participantUpdated = {
-      ...participant,
-      ...updateParticipantDto.guests,
-      isConfirmed: true,
-    };
-    return await this.participantRepository.save(participantUpdated);
+    const updated = await this.participantRepository.preload(updateParticipantDto)
+    if (!updated) throw new BadRequestException()
+    return await this.participantRepository.save(updated);
   }
 
   remove(id: string) {

@@ -13,5 +13,5 @@ export class CreateParticipantDto {
   readonly isConfirmed: boolean;
 
   @IsOptional()
-  readonly guests?: [Guest];
+  readonly guests: [Guest];
 }

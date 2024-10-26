@@ -16,7 +16,7 @@ export class Participant {
   readonly isConfirmed: boolean;
 
   @OneToMany(() => Guest, (guest) => guest.participant, { cascade: true, eager: true })
-  readonly guests?: Guest[];
+  readonly guests: Guest[];
 
   @CreateDateColumn({ name: 'created_at' })
   readonly createdAt: Date;
