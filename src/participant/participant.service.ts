@@ -15,7 +15,10 @@ export class ParticipantService {
   create(createParticipantDto: CreateParticipantDto) {
     return this.participantRepository.save(createParticipantDto);
   }
-
+  //todo: melhorar visao dos convidados em tela mobile
+  //todo: seguranca do admin
+  //todo: tirar telefone
+  //todo: mostrar confirmados na tabela
   findAll() {
     return this.participantRepository.find();
   }
