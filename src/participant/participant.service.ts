@@ -15,8 +15,6 @@ export class ParticipantService {
   create(createParticipantDto: CreateParticipantDto) {
     return this.participantRepository.save(createParticipantDto);
   }
-  //todo: tirar telefone
-  //todo: mostrar confirmados na tabela
   findAll() {
     return this.participantRepository.find();
   }
