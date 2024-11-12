@@ -77,27 +77,7 @@
       </div>
     </div>
     <div class="bg-faded rounded p-1 mt-5">
-      <p-datatable v-model:filters="filters" :value="participants" stripedRows paginator :rows="10" filterDisplay="row"
-                   :globalFilterFields="['name']">
-        <template #header>
-          <div class="flex justify-end">
-            <p-iconfield>
-              <p-inputicon>
-                <i class="pi pi-search" />
-              </p-inputicon>
-              <p-inputtext v-model="filters['global'].value" placeholder="Buscar" />
-            </p-iconfield>
-          </div>
-        </template>
-        <p-column field="id" header="ID"></p-column>
-        <p-column field="name" sortable header="Nome"></p-column>
-        <p-column field="isConfirmed" header="Confirmado">
-          <template #body="{data}">
-            {{data.status}} precisa criar tag template
-          </template>
-        </p-column>
-
-      </p-datatable>
+<!--     tabela-->
     </div>
   </div>
 </section>
