@@ -137,11 +137,19 @@
       }
     },
     async mounted() {
-      // if (id) {
-      //   const response = await fetch(`participants/${id}`)
-      //   this.participant = await response.json()
-      // }
-      this.loadTable()
+      const password = prompt('Senha de admin');
+      if (!password) window.location.href = '/'
+      const response = (await fetch(`admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password })
+      }))
+      const { isLogged } = await response.json()
+      if (isLogged) {
+        this.loadTable()
+      } else window.location.href = '/'
     },
     methods: {
       async loadTable() {

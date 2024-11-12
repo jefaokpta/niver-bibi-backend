@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Render } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Render } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 
@@ -15,6 +15,11 @@ export class AdminController {
   @Post()
   create(@Body() createAdminDto: CreateAdminDto) {
     return this.adminService.create(createAdminDto);
+  }
+
+  @Post('login')
+  login(@Body() login: {password: string}) {
+    return login.password === 'jefao123' ? {isLogged: true} : {isLogged: false};
   }
 
   @Get(':id')
